@@ -1,0 +1,24 @@
+{
+  "name": "duktape-wasm",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "main": "src/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "budo tests/sandbox.js --live --dir dist",
+    "build:lib": "emcc --memory-init-file 0 src/main.c lib/**/*.c -o dist/duktape.js -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -s MODULARIZE=1 -s 'EXPORT_NAME=\"loadWASM\"'",
+    "test": "tape tests"
+  },
+  "keywords": [
+    "duktape"
+  ],
+  "author": "kareniel",
+  "license": "MIT",
+  "devDependencies": {
+    "budo": "^11.6.0",
+    "tape": "^4.10.1"
+  }
+}
