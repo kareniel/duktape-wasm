@@ -1,9 +1,8 @@
-var loadWASM = require('../build/duktape')
-var noop = () => {}
+import loadWASM from '../build/duktape'
+const noop = () => {}
 
-function load () {
+function duktape () {
   console.log('Loading WASM Module...')
-
   var api = {
     _onReady: noop,
     on: function (eventName, callback) {
@@ -24,4 +23,4 @@ function load () {
   return api
 }
 
-module.exports = load
+export default duktape

@@ -1,15 +1,31 @@
 {
   "name": "duktape-wasm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "bindings to duktape in the browser",
-  "main": "dist/duktape-wasm.min.js",
+  "main": "dist/duktape-wasm.umd.js",
   "scripts": {
     "prepublishOnly": "npm run build",
     "start": "budo tests/sandbox.js --live",
     "build": "run-s build:*",
     "build:1": "emcc --memory-init-file 0 src/main.c lib/**/*.c -o build/duktape.js -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -s MODULARIZE=1 -s 'EXPORT_NAME=\"loadWASM\"' -s SINGLE_FILE=1",
-    "build:2": "browserify -o dist/duktape-wasm.min.js src -p tinyify",
+    "build:2": "rollup -c",
     "test": "tape tests"
+  },
+  "files": [
+    "dist"
+  ],
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "global": true,
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    ]
   },
   "keywords": [
     "duktape"
@@ -17,9 +33,18 @@
   "author": "kareniel",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^10.0.0",
     "budo": "^11.6.0",
     "npm-run-all": "^4.1.5",
-    "tape": "^4.10.1",
-    "tinyify": "^2.5.0"
+    "rollup": "^1.2.1",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-uglify": "^6.0.2",
+    "tape": "^4.10.1"
   }
 }

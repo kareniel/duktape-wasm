@@ -1,4 +1,4 @@
-var duktape = require('../src')
+import duktape from '../src'
 
 var runtime = duktape()
 
