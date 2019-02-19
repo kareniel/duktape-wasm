@@ -1,9 +1,7 @@
 var duktape = require('../src')
 
-main()
+var runtime = duktape()
 
-async function main () {
-  var runtime = await duktape()
-
-  console.log(runtime.eval(''))
-}
+runtime.on('ready', () => {
+  console.log(runtime.eval('"a"+"b"'))
+})

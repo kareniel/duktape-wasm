@@ -17,8 +17,6 @@ void start() {
   ctx = duk_create_heap(NULL, NULL, NULL, NULL, fatal_handler);
 
   duk_push_global_object(ctx);
-
-  duk_debugger_attach(ctx,);
 }
 
 EMSCRIPTEN_KEEPALIVE

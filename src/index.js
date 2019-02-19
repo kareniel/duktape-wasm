@@ -1,29 +1,27 @@
-var loadWASM = require('../dist/duktape')
+var loadWASM = require('../build/duktape')
 var noop = () => {}
 
-function duktape (Module) {
-  Module._start()
-
-  var api = {
-    eval: Module.cwrap('eval', 'string', [ 'string' ])
-  }
-
-  return api
-}
-
-function load (callback = noop) {
+function load () {
   console.log('Loading WASM Module...')
 
-  return new Promise(resolve => {
-    loadWASM().then(handleSuccess)
-
-    function handleSuccess (Module) {
-      var api = duktape(Module)
-
-      resolve(api)
-      callback(null, api)
+  var api = {
+    _onReady: noop,
+    on: function (eventName, callback) {
+      if (eventName === 'ready') {
+        this._onReady = callback
+      }
     }
+  }
+
+  loadWASM().then(Module => {
+    Module._start()
+
+    api.eval = Module.cwrap('eval', 'string', [ 'string' ])
+
+    api._onReady()
   })
+
+  return api
 }
 
 module.exports = load

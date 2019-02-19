@@ -1,6 +1,6 @@
 # duktape-wasm
 
-Evaluate javascript safely in the browser.
+Bindings to [Duktape](https://github.com/svaarala/duktape) in the browser.
 
 Planned:
 
@@ -9,26 +9,26 @@ Planned:
 - [ ] setTimeout, setInterval
 
 
-## Installation
-
-Assuming `emcc` is in your PATH, `npm run build:lib` will output some js and 
-wasm in the `dist` folder.
-
-
 ## Usage
 
 ```js
 var duktape = require('duktape-wasm')
 
-// using promises
-duktape().then(runtime => {})
+var runtime = duktape()
 
-// using callbacks
-duktape((err, runtime) => {})
+runtime.on('ready', () => {
+  runtime.eval('var a = 1;')
+})
 
 ```
 
 ## API
+
+#### runtime.on(eventName)
+
+Register an event listener.
+
+- `ready`: Called when the wasm module has finished loading. 
 
 #### runtime.eval(string)
 
