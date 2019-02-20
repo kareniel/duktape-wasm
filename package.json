@@ -7,7 +7,7 @@
     "prepublishOnly": "npm run build",
     "start": "budo tests/sandbox.js --live",
     "build": "run-s build:*",
-    "build:1": "emcc --memory-init-file 0 src/main.c lib/**/*.c -o build/duktape.js -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -s MODULARIZE=1 -s 'EXPORT_NAME=\"loadWASM\"' -s SINGLE_FILE=1",
+    "build:1": "emcc --memory-init-file 0 src/main.c lib/duktape/duktape.c -o build/duktape.js -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"getValue\",\"setValue\",\"cwrap\",\"addFunction\"]' -s MODULARIZE=1 -s 'EXPORT_NAME=\"loadWASM\"' -s SINGLE_FILE=1 -s RESERVED_FUNCTION_POINTERS=3",
     "build:2": "rollup -c",
     "test": "tape tests"
   },
@@ -46,5 +46,8 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-uglify": "^6.0.2",
     "tape": "^4.10.1"
+  },
+  "dependencies": {
+    "nanobus": "^4.4.0"
   }
 }
