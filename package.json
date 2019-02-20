@@ -1,6 +1,6 @@
 {
   "name": "duktape-wasm",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "bindings to duktape in the browser",
   "main": "dist/duktape-wasm.umd.js",
   "scripts": {
