@@ -53,14 +53,12 @@ export default class DebugProtocolParser extends Nanobus {
 
   handleNotification (buffer) {
     var id = buffer[0] - 0x80
-    var notificationType = NOTIFICATIONS[id]
+    var { type, format } = NOTIFICATIONS[id]
 
     var buf = Buffer.from(buffer.slice(1))
-    var format = notificationType.format
-
     var parser = new DValueParser(buf, format)
 
-    this.emit(notificationType.event, parser.parse())
+    this.emit('notification:' + type, parser.parse())
   }
 }
 
