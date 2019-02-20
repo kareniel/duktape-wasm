@@ -46,5 +46,8 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-uglify": "^6.0.2",
     "tape": "^4.10.1"
+  },
+  "dependencies": {
+    "nanobus": "^4.4.0"
   }
 }

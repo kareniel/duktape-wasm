@@ -1,4 +1,5 @@
 import loadWASM from '../build/duktape'
+import DebugProtocolParser from './DebugProtocolParser'
 const noop = () => {}
 
 function duktape () {
@@ -7,28 +8,33 @@ function duktape () {
   var api = {
     _onReady: noop,
     _onRead: noop,
-    on: registerHandler
+    _onWrite: noop,
+    on: registerHandler,
+    getBuffer: getBuffer
   }
 
   loadWASM().then(Module => {
+    api.Module = Module
     api.start = Module.cwrap('start', 'void', [ 'number' ])
     api.eval = Module.cwrap('eval', 'string', [ 'string' ])
     api.debug = Module.cwrap('debug', 'void', [])
 
-    var readCB = Module.addFunction(function (udataPtr, bufferPtr, length) {
-      var buffer = new Array(length).fill(0).map((_, index) => {
-        return Module.getValue(bufferPtr + index, '*')
-      })
+    var parser = new DebugProtocolParser()
 
-      api._onRead(buffer)
+    parser.on('*', (eventName, payload) => {
+      console.log(eventName, payload)
     })
 
-    var writeCB = Module.addFunction(function (udataPtr, bufferPtr, length) {
-      var buffer = new Array(length).fill(0).map((_, index) => {
-        return Module.getValue(bufferPtr + index, '*')
-      })
+    var readCB = Module.addFunction(function (ptr, length) {
+      var buffer = api.getBuffer(ptr, length)
 
-      api._onWrite(buffer)
+      parser.write(buffer)
+    })
+
+    var writeCB = Module.addFunction(function (ptr, length) {
+      var buffer = api.getBuffer(ptr, length)
+
+      parser.write(buffer)
     })
 
     api.start(readCB, writeCB)
@@ -36,6 +42,16 @@ function duktape () {
   })
 
   return api
+}
+
+function getBuffer (ptr, length) {
+  var buffer = new Uint8Array(length)
+
+  for (let i = 0; i < length; i++) {
+    buffer[i] = this.Module.getValue(ptr + i, 'i8')
+  }
+
+  return buffer
 }
 
 function registerHandler (eventName, callback) {

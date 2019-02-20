@@ -20,13 +20,13 @@ void fatal_handler(void *udata, const char *msg) {
 }
 
 duk_size_t read_cb (void *udata, char *buffer, duk_size_t length) {
-  js_read_cb(udata, buffer, length);
+  js_read_cb(buffer, length);
 
   return length;
 }
 
 duk_size_t write_cb (void *udata, const char *buffer, duk_size_t length) {
-  js_write_cb(udata, buffer, length);
+  js_write_cb(buffer, length);
 
   return length;
 }
